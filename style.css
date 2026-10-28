@@ -1,11 +1,19 @@
 body {
-            background-color: black;
-        }
-        h1 {
-            color: lavender,purple;
-            margin-left: 20px;
-        }
-        p {
-            font-family: 'Eater',Impact,'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif, 'Arial Narrow Bold', sans-serif, cursive;
-            font-size: 20px;
-        } 
+  background-color: black;
+}
+h1 {
+  color: red, purple;
+  margin-left: 20px;
+}
+p {
+  font-family:
+    "Eater", Impact, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif, "Arial Narrow Bold", sans-serif, cursive;
+  font-size: 20px;
+}
+p {
+  font-family:
+    "Eater", Impact, "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif, "Arial Narrow Bold", sans-serif, cursive;
+  font-size: 20px;
+}
