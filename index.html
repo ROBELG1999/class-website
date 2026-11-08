@@ -1,39 +1,41 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robel’s Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Eater&amp;family=Karla:wght@400;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Eater&amp;display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: black;
-        }
-        h1, h2 {
-            color: lavender,purple;
-            margin-left: 20px;
-        }
-        p {
-            font-family: 'Eater',Impact,'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif, 'Arial Narrow Bold', sans-serif, cursive;
-            font-size: 20px;
-            color: lavender, purple;
-            margin-left: 20px;
-        }
-        img {
-            max-width: 100%;
-        }
-    </style>
 </head>
 <body>
-    <h1>MY HOBBIES</h1>
-    <h2>Things I Enjoy</h2>
-    <p>I enjoy LOOKING AT GRAFFITI</p>
-    <p>READING COMICS AND MANGA</p>
-    <p>PLAYING VIDEO GAMES AND LISTEN TO MUSIC</p>
+    <div class="page">
+        <header class="page-header">
+            <div>
+                <h1>MY HOBBIES</h1>
+                <h2>Things I Enjoy</h2>
+            </div>
+            <nav id="main-nav" aria-label="Main">
+                <a href="index.html" aria-current="page">Home</a>
+                <a href="about.html">About</a>
+            </nav>
+        </header>
 
-   <img src="20251102_143310.jpg" alt="Wall covered in graffiti, stickers and posters, with planters of green plants along the bottom" style="max-width:100%; height:auto;">
+        <main id="hobbies">
+            <p class="hobby">I enjoy LOOKING AT GRAFFITI</p>
+            <p class="hobby">READING COMICS AND MANGA</p>
+            <p class="hobby">PLAYING VIDEO GAMES AND LISTEN TO MUSIC</p>
+        </main>
 
-   <img src="DRILL_HEAD.jpg" alt="Black-and-white manga illustration of a man holding a drill to his forehead"
+        <section class="photo" aria-label="Gallery">
+            <figure>
+                <img src="20251102_143310.jpg" alt="A lively outdoor wall covered with colorful graffiti, stickers, and posters, with green plants in planters along the bottom, forming a bold, energetic urban scene.">
+                <figcaption>Graffiti wall</figcaption>
+            </figure>
+            <figure>
+                <img src="DRILL_HEAD.jpg" alt="Black-and-white manga panel of a shirtless man with slicked-back dark hair holding a power drill to his forehead and staring intently.">
+                <figcaption>Manga panel</figcaption>
+            </figure>
+        </section>
+    </div>
 </body>
 </html>
