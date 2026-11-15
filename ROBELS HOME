@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Robel's hobbies: graffiti, comics and manga, video games, and music.">
+    <title>Robel | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Eater&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="page">
+        <header class="page-header">
+            <div>
+                <h1>My Hobbies</h1>
+                <p>Things I enjoy</p>
+            </div>
+            <nav aria-label="Main">
+                <a href="index.html" aria-current="page">Home</a>
+                <a href="about.html">About</a>
+            </nav>
+        </header>
+
+        <main id="main">
+            <section aria-labelledby="hobbies-heading">
+                <h2 id="hobbies-heading">What I do for fun</h2>
+                <ul class="hobby-list">
+                    <li>Looking at graffiti</li>
+                    <li>Reading comics and manga</li>
+                    <li>Playing video games and listening to music</li>
+                </ul>
+            </section>
+
+            <section class="photo-section" aria-labelledby="gallery-heading">
+                <h2 id="gallery-heading">Gallery</h2>
+                <div class="photo">
+                    <figure>
+                        <img src="20251102_143310.jpg" width="800" height="600" loading="lazy" alt="Outdoor wall covered in colorful graffiti, stickers, and posters, with green plants along the bottom.">
+                        <figcaption>Graffiti wall</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="DRILL_HEAD.jpg" width="800" height="600" loading="lazy" alt="Black-and-white manga panel of a shirtless man with slicked-back dark hair holding a power drill to his forehead and staring intently.">
+                        <figcaption>Manga panel</figcaption>
+                    </figure>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
