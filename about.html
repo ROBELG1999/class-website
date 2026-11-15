@@ -1,0 +1,150 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Robel, and a form to get in touch.">
+    <title>Robel | About and Contact</title>
+    <link href="https://fonts.googleapis.com/css2?family=Eater&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="page">
+        <header class="page-header">
+            <div>
+                <h1>About Me</h1>
+                <p>And how to reach me</p>
+            </div>
+            <nav aria-label="Main">
+                <a href="index.html">Home</a>
+                <a href="about.html" aria-current="page">About</a>
+            </nav>
+        </header>
+
+        <main id="main">
+            <section aria-labelledby="about-heading">
+                <h2 id="about-heading">Hi, I'm Robel</h2>
+                <p>IF YOU WANT TO REACH ME LEAVE YOUR CONTACT INFO.</p>
+            </section>
+
+            <section aria-labelledby="contact-heading">
+                <h2 id="contact-heading">Contact me</h2>
+                <p>All fields are required.</p>
+
+                <div id="error-summary" class="error-summary" role="alert" tabindex="-1" hidden>
+                    <h2>Please fix these problems</h2>
+                    <ul id="error-list"></ul>
+                </div>
+                <div id="success" class="success" role="status" tabindex="-1" hidden>
+                    <strong>Thanks, your message was sent.</strong>
+                </div>
+
+                <form id="contact-form" action="#" method="post" novalidate>
+                    <fieldset>
+                        <legend>Your details</legend>
+                        <div class="field">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-error">
+                            <p class="error-msg" id="name-error" hidden></p>
+                        </div>
+                        <div class="field">
+                            <label for="email">Email address</label>
+                            <p class="hint" id="email-hint">Example: name@example.com</p>
+                            <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-hint email-error">
+                            <p class="error-msg" id="email-error" hidden></p>
+                        </div>
+                    </fieldset>
+
+                    <fieldset id="topic-group" aria-describedby="topic-error">
+                        <legend>What is your message about?</legend>
+                        <div class="radio"><input type="radio" id="topic-hobbies" name="topic" value="hobbies"><label for="topic-hobbies">My hobbies</label></div>
+                        <div class="radio"><input type="radio" id="topic-collab" name="topic" value="collab"><label for="topic-collab">Working together</label></div>
+                        <div class="radio"><input type="radio" id="topic-other" name="topic" value="other"><label for="topic-other">Something else</label></div>
+                        <p class="error-msg" id="topic-error" hidden></p>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Your message</legend>
+                        <div class="field">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" required aria-describedby="message-error"></textarea>
+                            <p class="error-msg" id="message-error" hidden></p>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit">Send message</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    (function () {
+        var form = document.getElementById('contact-form');
+        var summary = document.getElementById('error-summary');
+        var list = document.getElementById('error-list');
+        var success = document.getElementById('success');
+
+        function setError(id, msg) {
+            var field = document.getElementById(id);
+            var out = document.getElementById(id + '-error');
+            if (msg) {
+                out.textContent = msg; out.hidden = false;
+                field.setAttribute('aria-invalid', 'true');
+            } else {
+                out.textContent = ''; out.hidden = true;
+                field.removeAttribute('aria-invalid');
+            }
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            success.hidden = true;
+            var errors = [];
+            var name = form.name.value.trim();
+            var email = form.email.value.trim();
+            var message = form.message.value.trim();
+            var topic = form.querySelector('input[name="topic"]:checked');
+
+            var nameMsg = name ? '' : 'Enter your name.';
+            var emailMsg = !email ? 'Enter your email address.'
+                : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'Enter an email address like name@example.com.' : '';
+            var messageMsg = message ? '' : 'Enter a message.';
+            var topicMsg = topic ? '' : 'Choose what your message is about.';
+
+            setError('name', nameMsg);
+            setError('email', emailMsg);
+            setError('message', messageMsg);
+            var topicOut = document.getElementById('topic-error');
+            topicOut.textContent = topicMsg; topicOut.hidden = !topicMsg;
+            var group = document.getElementById('topic-group');
+            if (topicMsg) group.setAttribute('aria-invalid', 'true'); else group.removeAttribute('aria-invalid');
+
+            if (nameMsg) errors.push(['name', nameMsg]);
+            if (emailMsg) errors.push(['email', emailMsg]);
+            if (topicMsg) errors.push(['topic-hobbies', topicMsg]);
+            if (messageMsg) errors.push(['message', messageMsg]);
+
+            list.innerHTML = '';
+            if (errors.length) {
+                errors.forEach(function (err) {
+                    var li = document.createElement('li');
+                    var a = document.createElement('a');
+                    a.href = '#' + err[0]; a.textContent = err[1];
+                    a.addEventListener('click', function (ev) { ev.preventDefault(); document.getElementById(err[0]).focus(); });
+                    li.appendChild(a); list.appendChild(li);
+                });
+                summary.hidden = false;
+                summary.focus();
+                return;
+            }
+            summary.hidden = true;
+            form.reset();
+            success.hidden = false;
+            success.focus();
+        });
+    })();
+    </script>
+</body>
+</html>
