@@ -1,0 +1,153 @@
+// interactive.js: the three interactive demos on exercises.html
+//   1. A button that changes the text on the page
+//   2. An input whose style changes in real time as you type
+//   3. A dynamic list: add items with createElement/appendChild, remove them with a button
+// No inline onclick attributes. Everything is wired up with addEventListener.
+
+(function () {
+  "use strict";
+
+  // ---------- Demo 1: button changes content ----------
+  var factButton = document.getElementById("fact-button");
+  var factText = document.getElementById("fact-text");
+  var hobbyFacts = [
+    "Manga is traditionally read from right to left.",
+    "Pixel-art street mosaics are built from small square tiles stuck to the wall.",
+    "A stencil lets an artist repeat the same shape quickly on many walls.",
+    "A graffiti piece can be read as a picture, a word, or both at once."
+  ];
+  var factIndex = -1;
+
+  if (factButton && factText) {
+    factButton.addEventListener("click", function () {
+      factIndex = (factIndex + 1) % hobbyFacts.length;
+      factText.textContent = hobbyFacts[factIndex];
+      factButton.textContent = "Show another fact";
+    });
+  }
+
+  // ---------- Demos 2 and 3: live input style + dynamic list ----------
+  var hobbyInput = document.getElementById("hobby-input");
+  var addButton = document.getElementById("hobby-add");
+  var hobbyList = document.getElementById("hobby-list");
+  var hobbyHint = document.getElementById("hobby-hint");
+  var hobbyError = document.getElementById("hobby-error");
+  var hobbyStatus = document.getElementById("hobby-status");
+  var emptyNote = document.getElementById("hobby-empty");
+
+  if (!hobbyInput || !addButton || !hobbyList) { return; }
+
+  var MIN_LETTERS = 3;
+  var MAX_ITEMS = 10;
+  var defaultHint = hobbyHint.textContent;
+
+  // Demo 2: the input's class (and so its colors) changes on every keystroke.
+  // The hint text changes too, so the state is never shown by color alone.
+  function updateInputStyle() {
+    var length = hobbyInput.value.trim().length;
+    hobbyInput.classList.remove("is-short", "is-good");
+
+    if (length === 0) {
+      hobbyHint.textContent = defaultHint;
+    } else if (length < MIN_LETTERS) {
+      hobbyInput.classList.add("is-short");
+      hobbyHint.textContent = "Too short. Keep typing (at least " + MIN_LETTERS + " letters).";
+    } else {
+      hobbyInput.classList.add("is-good");
+      hobbyHint.textContent = "Looks good. Press Add hobby.";
+    }
+    clearError();
+  }
+
+  function showError(message) {
+    hobbyError.textContent = message;
+    hobbyError.hidden = false;
+    hobbyInput.setAttribute("aria-invalid", "true");
+    hobbyInput.focus();
+  }
+
+  function clearError() {
+    hobbyError.textContent = "";
+    hobbyError.hidden = true;
+    hobbyInput.removeAttribute("aria-invalid");
+  }
+
+  function describeCount() {
+    var count = hobbyList.children.length;
+    return count + (count === 1 ? " hobby" : " hobbies") + " in your list.";
+  }
+
+  function updateEmptyNote() {
+    emptyNote.hidden = hobbyList.children.length > 0;
+  }
+
+  function hobbyAlreadyListed(name) {
+    var items = hobbyList.querySelectorAll(".hobby-name");
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].textContent.toLowerCase() === name.toLowerCase()) { return true; }
+    }
+    return false;
+  }
+
+  // Demo 3: build a list item with createElement and add it with appendChild.
+  function createHobbyItem(name) {
+    var listItem = document.createElement("li");
+    listItem.className = "hobby-item";
+
+    var nameSpan = document.createElement("span");
+    nameSpan.className = "hobby-name";
+    nameSpan.textContent = name;            // textContent (not innerHTML) keeps typed text safe
+
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "remove-button";
+    removeButton.textContent = "Remove";
+    removeButton.setAttribute("aria-label", "Remove " + name);
+
+    removeButton.addEventListener("click", function () {
+      hobbyList.removeChild(listItem);
+      updateEmptyNote();
+      hobbyStatus.textContent = "Removed " + name + ". " + describeCount();
+      hobbyInput.focus();                   // keep keyboard focus somewhere useful
+    });
+
+    listItem.appendChild(nameSpan);
+    listItem.appendChild(removeButton);
+    return listItem;
+  }
+
+  function addHobby() {
+    var name = hobbyInput.value.trim();
+
+    if (name.length < MIN_LETTERS) {
+      showError("Type at least " + MIN_LETTERS + " letters before adding a hobby.");
+      return;
+    }
+    if (hobbyList.children.length >= MAX_ITEMS) {
+      showError("The list is full. Remove a hobby first (maximum " + MAX_ITEMS + ").");
+      return;
+    }
+    if (hobbyAlreadyListed(name)) {
+      showError(name + " is already in your list.");
+      return;
+    }
+
+    hobbyList.appendChild(createHobbyItem(name));
+    hobbyInput.value = "";
+    updateInputStyle();
+    updateEmptyNote();
+    hobbyStatus.textContent = "Added " + name + ". " + describeCount();
+    hobbyInput.focus();
+  }
+
+  hobbyInput.addEventListener("input", updateInputStyle);
+  hobbyInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addHobby();
+    }
+  });
+  addButton.addEventListener("click", addHobby);
+
+  updateEmptyNote();
+})();
