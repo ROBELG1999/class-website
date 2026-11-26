@@ -1,153 +1,164 @@
-// interactive.js: the three interactive demos on exercises.html
-//   1. A button that changes the text on the page
-//   2. An input whose style changes in real time as you type
-//   3. A dynamic list: add items with createElement/appendChild, remove them with a button
-// No inline onclick attributes. Everything is wired up with addEventListener.
+/* ============================================================
+   1. MOBILE NAV TOGGLE  (querySelector + addEventListener)
+   ============================================================ */
+const navToggle = document.querySelector('#nav-toggle');
+const primaryNav = document.querySelector('#primary-nav');
 
-(function () {
-  "use strict";
+if (navToggle && primaryNav) {
+  const closeNav = () => {
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Open navigation menu');
+    primaryNav.classList.remove('is-open');
+  };
 
-  // ---------- Demo 1: button changes content ----------
-  var factButton = document.getElementById("fact-button");
-  var factText = document.getElementById("fact-text");
-  var hobbyFacts = [
-    "Manga is traditionally read from right to left.",
-    "Pixel-art street mosaics are built from small square tiles stuck to the wall.",
-    "A stencil lets an artist repeat the same shape quickly on many walls.",
-    "A graffiti piece can be read as a picture, a word, or both at once."
-  ];
-  var factIndex = -1;
+  const openNav = () => {
+    navToggle.setAttribute('aria-expanded', 'true');
+    navToggle.setAttribute('aria-label', 'Close navigation menu');
+    primaryNav.classList.add('is-open');
+  };
 
-  if (factButton && factText) {
-    factButton.addEventListener("click", function () {
-      factIndex = (factIndex + 1) % hobbyFacts.length;
-      factText.textContent = hobbyFacts[factIndex];
-      factButton.textContent = "Show another fact";
-    });
-  }
+  navToggle.addEventListener('click', () => {
+    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+    expanded ? closeNav() : openNav();
+  });
 
-  // ---------- Demos 2 and 3: live input style + dynamic list ----------
-  var hobbyInput = document.getElementById("hobby-input");
-  var addButton = document.getElementById("hobby-add");
-  var hobbyList = document.getElementById("hobby-list");
-  var hobbyHint = document.getElementById("hobby-hint");
-  var hobbyError = document.getElementById("hobby-error");
-  var hobbyStatus = document.getElementById("hobby-status");
-  var emptyNote = document.getElementById("hobby-empty");
-
-  if (!hobbyInput || !addButton || !hobbyList) { return; }
-
-  var MIN_LETTERS = 3;
-  var MAX_ITEMS = 10;
-  var defaultHint = hobbyHint.textContent;
-
-  // Demo 2: the input's class (and so its colors) changes on every keystroke.
-  // The hint text changes too, so the state is never shown by color alone.
-  function updateInputStyle() {
-    var length = hobbyInput.value.trim().length;
-    hobbyInput.classList.remove("is-short", "is-good");
-
-    if (length === 0) {
-      hobbyHint.textContent = defaultHint;
-    } else if (length < MIN_LETTERS) {
-      hobbyInput.classList.add("is-short");
-      hobbyHint.textContent = "Too short. Keep typing (at least " + MIN_LETTERS + " letters).";
-    } else {
-      hobbyInput.classList.add("is-good");
-      hobbyHint.textContent = "Looks good. Press Add hobby.";
-    }
-    clearError();
-  }
-
-  function showError(message) {
-    hobbyError.textContent = message;
-    hobbyError.hidden = false;
-    hobbyInput.setAttribute("aria-invalid", "true");
-    hobbyInput.focus();
-  }
-
-  function clearError() {
-    hobbyError.textContent = "";
-    hobbyError.hidden = true;
-    hobbyInput.removeAttribute("aria-invalid");
-  }
-
-  function describeCount() {
-    var count = hobbyList.children.length;
-    return count + (count === 1 ? " hobby" : " hobbies") + " in your list.";
-  }
-
-  function updateEmptyNote() {
-    emptyNote.hidden = hobbyList.children.length > 0;
-  }
-
-  function hobbyAlreadyListed(name) {
-    var items = hobbyList.querySelectorAll(".hobby-name");
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].textContent.toLowerCase() === name.toLowerCase()) { return true; }
-    }
-    return false;
-  }
-
-  // Demo 3: build a list item with createElement and add it with appendChild.
-  function createHobbyItem(name) {
-    var listItem = document.createElement("li");
-    listItem.className = "hobby-item";
-
-    var nameSpan = document.createElement("span");
-    nameSpan.className = "hobby-name";
-    nameSpan.textContent = name;            // textContent (not innerHTML) keeps typed text safe
-
-    var removeButton = document.createElement("button");
-    removeButton.type = "button";
-    removeButton.className = "remove-button";
-    removeButton.textContent = "Remove";
-    removeButton.setAttribute("aria-label", "Remove " + name);
-
-    removeButton.addEventListener("click", function () {
-      hobbyList.removeChild(listItem);
-      updateEmptyNote();
-      hobbyStatus.textContent = "Removed " + name + ". " + describeCount();
-      hobbyInput.focus();                   // keep keyboard focus somewhere useful
-    });
-
-    listItem.appendChild(nameSpan);
-    listItem.appendChild(removeButton);
-    return listItem;
-  }
-
-  function addHobby() {
-    var name = hobbyInput.value.trim();
-
-    if (name.length < MIN_LETTERS) {
-      showError("Type at least " + MIN_LETTERS + " letters before adding a hobby.");
-      return;
-    }
-    if (hobbyList.children.length >= MAX_ITEMS) {
-      showError("The list is full. Remove a hobby first (maximum " + MAX_ITEMS + ").");
-      return;
-    }
-    if (hobbyAlreadyListed(name)) {
-      showError(name + " is already in your list.");
-      return;
-    }
-
-    hobbyList.appendChild(createHobbyItem(name));
-    hobbyInput.value = "";
-    updateInputStyle();
-    updateEmptyNote();
-    hobbyStatus.textContent = "Added " + name + ". " + describeCount();
-    hobbyInput.focus();
-  }
-
-  hobbyInput.addEventListener("input", updateInputStyle);
-  hobbyInput.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      addHobby();
+  // Escape closes the menu and returns focus to the toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
+      closeNav();
+      navToggle.focus();
     }
   });
-  addButton.addEventListener("click", addHobby);
 
-  updateEmptyNote();
-})();
+  // Click outside closes it (mobile convenience)
+  document.addEventListener('click', (e) => {
+    if (navToggle.getAttribute('aria-expanded') !== 'true') return;
+    if (!primaryNav.contains(e.target) && !navToggle.contains(e.target)) {
+      closeNav();
+    }
+  });
+}
+
+/* ============================================================
+   2. FORM VALIDATION  (accessible, no alert())
+   ============================================================ */
+const form = document.querySelector('#contact-form');
+
+if (form) {
+  const fields = ['name', 'email', 'subject', 'message'];
+  const status = form.querySelector('#form-status');
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const getInput = (name) => form.elements[name];
+  const getError = (name) => document.getElementById(`${name}-error`);
+
+  function setError(name, message) {
+    const input = getInput(name);
+    const error = getError(name);
+    error.textContent = message;
+    error.hidden = false;
+    input.setAttribute('aria-invalid', 'true');
+  }
+
+  function clearError(name) {
+    const input = getInput(name);
+    const error = getError(name);
+    if (error.hidden) return;
+    error.textContent = '';
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
+  }
+
+  function validateField(name) {
+    const value = getInput(name).value.trim();
+
+    if (!value) {
+      setError(name, 'This field is required.');
+      return false;
+    }
+    if (name === 'email' && !emailPattern.test(value)) {
+      setError(name, 'Please enter a valid email address (e.g. you@example.com).');
+      return false;
+    }
+    clearError(name);
+    return true;
+  }
+
+  // Live character counter
+  const message = getInput('message');
+  const counter = document.getElementById('message-count');
+  message.addEventListener('input', () => {
+    counter.textContent = `${message.value.length} / 500`;
+  });
+
+  // Clear errors as soon as the user fixes a field
+  fields.forEach((name) => {
+    const input = getInput(name);
+    input.addEventListener('input',  () => clearError(name));
+    input.addEventListener('change', () => clearError(name));
+    input.addEventListener('blur', () => {
+      if (input.value.trim()) validateField(name);
+    });
+  });
+
+  // Submit handler
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let firstInvalid = null;
+
+    fields.forEach((name) => {
+      const ok = validateField(name);
+      if (!ok && !firstInvalid) firstInvalid = getInput(name);
+    });
+
+    if (firstInvalid) {
+      status.className = 'error';
+      status.textContent = 'Please fix the highlighted fields and try again.';
+      firstInvalid.focus();
+      return;
+    }
+
+    status.className = 'success';
+    status.textContent = 'Thanks! Your message has been sent.';
+    form.reset();
+    counter.textContent = '0 / 500';
+  });
+}
+
+/* ============================================================
+   3. BONUS: GITHUB PROFILE CARD  (fetch + error handling)
+   ============================================================ */
+async function loadGitHubCard() {
+  const container = document.getElementById('github-content');
+  if (!container) return;
+
+  try {
+    const res = await fetch('https://api.github.com/users/ROBELG1999', {
+      headers: { Accept: 'application/vnd.github+json' },
+    });
+    if (!res.ok) throw new Error(`GitHub API responded ${res.status}`);
+
+    const user = await res.json();
+
+    container.innerHTML = `
+      <img src="${user.avatar_url}" alt="" width="72" height="72" loading="lazy">
+      <div>
+        <p><strong>
+          <a href="${user.html_url}" rel="noopener" target="_blank">@${user.login}</a>
+        </strong></p>
+        <p>${user.public_repos} public repos &middot; ${user.followers} followers</p>
+        ${user.bio ? `<p>${user.bio}</p>` : ''}
+      </div>`;
+  } catch (err) {
+    container.innerHTML = `
+      <p class="error">
+        Couldn't load GitHub data right now.
+        <a href="https://github.com/ROBELG1999" rel="noopener" target="_blank">
+          View the profile directly on GitHub &nearr;
+        </a>
+      </p>`;
+    console.error('GitHub fetch failed:', err);
+  }
+}
+
+loadGitHubCard();
